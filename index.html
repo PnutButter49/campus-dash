@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101526">
+<title>Campus Dash</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="brandMark">🎓</span><div><b>CAMPUS DASH</b><small>You're late for class. Again.</small></div></div>
+  <button id="soundToggle" class="iconBtn" aria-label="Toggle sound">🔊</button>
+</header>
+
+<main>
+<section id="menu" class="screen active">
+  <div class="hero panel">
+    <div class="heroCopy">
+      <p class="eyebrow">ORIGINAL COLLEGE ENDLESS RUNNER</p>
+      <h1>RUN.<br><span>DODGE.</span><br>DON'T BE LATE.</h1>
+      <p class="lead">Three lanes. Seven campus zones. One professor who absolutely took attendance.</p>
+      <div class="menuGrid">
+        <button id="runBtn" class="primary big">▶ RUN</button>
+        <button id="dailyBtn" class="secondary big">📅 DAILY CHALLENGE</button>
+        <button id="timeBtn" class="secondary big">⏱ TIME ATTACK</button>
+        <button id="lockerBtn" class="secondary">🎒 CHARACTERS</button>
+        <button id="boardBtn" class="secondary">🏆 LEADERBOARD</button>
+        <button id="howBtn" class="secondary">❓ HOW TO PLAY</button>
+        <button id="settingsBtn" class="secondary">⚙ SETTINGS</button>
+      </div>
+      <p id="saveStatus" class="status"></p>
+    </div>
+    <div class="phonePoster" aria-hidden="true">
+      <div class="lateBubble">CLASS STARTED<br><strong>2 MIN AGO</strong></div>
+      <div class="roadMini"><i></i><i></i><i></i><div class="runnerMini">🏃</div><div class="bookMini">📚</div><div class="coffeeMini">☕</div></div>
+      <div class="posterScore">BEST <b id="posterBest">0</b></div>
+    </div>
+  </div>
+</section>
+
+<section id="setup" class="screen">
+  <div class="panel dialog">
+    <p class="eyebrow">BEFORE YOU SPRINT</p>
+    <h2>WHO'S LATE TODAY?</h2>
+    <p>Use an anonymous nickname only. No real name, email, or account is needed.</p>
+    <form id="setupForm">
+      <label>Runner nickname
+        <input id="nickname" maxlength="18" autocomplete="off" placeholder="CoffeePowered" required>
+      </label>
+      <label>Runner
+        <select id="characterSelect"></select>
+      </label>
+      <p id="setupError" class="error"></p>
+      <div class="actions">
+        <button type="button" class="secondary back">BACK</button>
+        <button class="primary">START RUN</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section id="game" class="screen gameScreen">
+  <div class="hud">
+    <div class="hudBlock"><small>SCORE</small><b id="scoreText">0</b></div>
+    <div class="hudBlock"><small>DISTANCE</small><b id="distanceText">0m</b></div>
+    <div class="hudBlock accent"><small>MULTIPLIER</small><b id="multText">x1</b></div>
+    <div class="hudBlock"><small>CREDITS</small><b id="creditsText">0</b></div>
+    <div class="hudBlock"><small id="modeLabel">ENDLESS</small><b id="timeText">0:00</b></div>
+  </div>
+
+  <div class="canvasWrap" id="canvasWrap">
+    <canvas id="gameCanvas" width="960" height="540" aria-label="Campus Dash game"></canvas>
+    <div id="gameOverlay" class="gameOverlay hidden"></div>
+    <div id="powerHud" class="powerHud"></div>
+    <div id="missionHud" class="missionHud"></div>
+  </div>
+
+  <div class="touchControls" aria-label="Touch controls">
+    <button data-action="left">←<span>LEFT</span></button>
+    <button data-action="jump">↑<span>JUMP</span></button>
+    <button data-action="slide">↓<span>SLIDE</span></button>
+    <button data-action="right">→<span>RIGHT</span></button>
+    <button data-action="power" class="powerButton">⚡<span>POWER</span></button>
+  </div>
+  <div class="gameActions">
+    <button id="pauseBtn" class="secondary small">PAUSE</button>
+    <button id="quitBtn" class="secondary small">QUIT</button>
+  </div>
+  <p class="keyhint">A / ← left • D / → right • W / ↑ / Space jump • S / ↓ slide • E power • P pause</p>
+</section>
+
+<section id="gameOver" class="screen">
+  <div class="panel resultPanel">
+    <p id="resultEyebrow" class="eyebrow">RUN OVER</p>
+    <h2 id="resultTitle">YOU'RE LATE.</h2>
+    <div id="professorQuote" class="quote"></div>
+    <div id="runStats" class="stats"></div>
+    <p id="resultStatus" class="status"></p>
+    <div class="actions center">
+      <button id="resultMenuBtn" class="secondary">MAIN MENU</button>
+      <button id="runAgainBtn" class="primary">RUN AGAIN</button>
+    </div>
+  </div>
+</section>
+
+<section id="locker" class="screen">
+  <div class="panel wide">
+    <div class="sectionHead"><div><p class="eyebrow">LOCKER</p><h2>RUNNERS</h2></div><button class="secondary back">BACK</button></div>
+    <p>Spend Campus Credits to unlock runners. Cosmetics are visual only—no pay-to-win stats.</p>
+    <div id="characterCards" class="characterCards"></div>
+  </div>
+</section>
+
+<section id="leaderboard" class="screen">
+  <div class="panel wide">
+    <div class="sectionHead"><div><p class="eyebrow">ONLINE TOP 10</p><h2>CAMPUS LEGENDS</h2></div><button class="secondary back">BACK</button></div>
+    <div class="tabs">
+      <button class="tab active" data-board-mode="endless">ENDLESS</button>
+      <button class="tab" data-board-mode="time_attack">TIME ATTACK</button>
+      <button class="tab" data-board-mode="daily">TODAY'S DAILY</button>
+    </div>
+    <p id="boardStatus" class="status"></p>
+    <div class="tableWrap"><table>
+      <thead><tr><th>#</th><th>Runner</th><th>Score</th><th>Distance</th><th>Multiplier</th></tr></thead>
+      <tbody id="boardBody"></tbody>
+    </table></div>
+  </div>
+</section>
+
+<section id="how" class="screen">
+  <div class="panel wide">
+    <div class="sectionHead"><div><p class="eyebrow">ORIENTATION</p><h2>HOW TO PLAY</h2></div><button class="secondary back">BACK</button></div>
+    <div class="controlGrid">
+      <article><div><kbd>A</kbd><kbd>←</kbd></div><h3>MOVE LEFT</h3><p>Shift one lane left.</p></article>
+      <article><div><kbd>D</kbd><kbd>→</kbd></div><h3>MOVE RIGHT</h3><p>Shift one lane right.</p></article>
+      <article><div><kbd>W</kbd><kbd>↑</kbd><kbd>SPACE</kbd></div><h3>JUMP</h3><p>Leap over low obstacles.</p></article>
+      <article><div><kbd>S</kbd><kbd>↓</kbd></div><h3>SLIDE</h3><p>Duck under overhead barriers.</p></article>
+      <article><div><kbd>E</kbd></div><h3>USE POWER</h3><p>Activate your stored special power-up.</p></article>
+      <article><div><kbd>P</kbd></div><h3>PAUSE</h3><p>Pause an offline run.</p></article>
+    </div>
+    <div class="howGrid">
+      <article><h3>📱 MOBILE</h3><p>Swipe left/right to change lanes, swipe up to jump, and swipe down to slide. Large touch buttons are also available.</p></article>
+      <article><h3>🔥 BUILD MULTIPLIER</h3><p>Close calls, credit streaks, and mission progress raise your multiplier up to x5. Crashing resets it.</p></article>
+      <article><h3>⚡ POWER-UPS</h3><p>Coffee Rush, Extra Credit Magnet, Graduation Cap Shield, Professor's Pass, All-Nighter, Study Guide, and Double Credits can save a run.</p></article>
+      <article><h3>🏆 COMPETE</h3><p>Endless, Time Attack, and the same-seed Daily Challenge each have online rankings.</p></article>
+    </div>
+  </div>
+</section>
+
+<section id="settings" class="screen">
+  <div class="panel dialog">
+    <p class="eyebrow">SETTINGS</p><h2>GAME OPTIONS</h2>
+    <label class="switch">Sound effects<input id="soundSetting" type="checkbox" checked></label>
+    <label class="switch">Screen shake<input id="shakeSetting" type="checkbox" checked></label>
+    <label class="switch">Reduced motion<input id="motionSetting" type="checkbox"></label>
+    <label class="switch">Touch buttons<input id="touchSetting" type="checkbox" checked></label>
+    <button class="secondary back">BACK</button>
+  </div>
+</section>
+</main>
+
+<script src="game.js"></script>
+</body>
+</html>
